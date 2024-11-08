@@ -2,6 +2,8 @@ package com.kyalo.ecommerce.customer;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CustomerMapper {
     public Customer toCustomer(CustomerRequest request) {
@@ -15,5 +17,14 @@ public class CustomerMapper {
                 .email(request.email())
                 .address(request.address())
                 .build();
+    }
+
+    public CustomerResponse toCustomerResponse(Customer customer) {
+        return new CustomerResponse(
+                customer.getFirstName(),
+                customer.getLastName(),
+                customer.getEmail(),
+                customer.getAddress()
+        );
     }
 }
