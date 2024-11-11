@@ -6,7 +6,6 @@ services:
       POSTGRES_USER: kyalo
       POSTGRES_PASSWORD: kyalo
       PGDATA: /var/lib/postgresql/data
-      POSTGRES_DB: kyalo
     volumes:
       - postgres:/var/lib/postgresql/data
     ports:
