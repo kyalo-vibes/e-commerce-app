@@ -14,7 +14,7 @@ public class ProductMapper {
                 .description(productRequest.description())
                 .availableQuantity(productRequest.availableQuantity())
                 .price(productRequest.price())
-                .category(Category.builder().id(productRequest.id()).build())
+                .category(Category.builder().id(productRequest.category_id()).build())
                 .build();
     }
 
