@@ -8,6 +8,7 @@ import com.kyalo.ecommerce.orderline.OrderLineRequest;
 import com.kyalo.ecommerce.orderline.OrderLineService;
 import com.kyalo.ecommerce.product.ProductClient;
 import com.kyalo.ecommerce.product.PurchaseRequest;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -68,6 +69,8 @@ public class OrderService {
     }
 
     public OrderResponse findOrder(Integer id) {
-        return repository.findById(id);
+        return repository.findById(id)
+                .map(mapper::fromOrder)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Order not found with id:: %d", id)));
     }
 }
