@@ -6,6 +6,8 @@ import com.kyalo.ecommerce.kafka.OrderConfirmation;
 import com.kyalo.ecommerce.kafka.OrderProducer;
 import com.kyalo.ecommerce.orderline.OrderLineRequest;
 import com.kyalo.ecommerce.orderline.OrderLineService;
+import com.kyalo.ecommerce.payment.PaymentClient;
+import com.kyalo.ecommerce.payment.PaymentRequest;
 import com.kyalo.ecommerce.product.ProductClient;
 import com.kyalo.ecommerce.product.PurchaseRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,6 +27,8 @@ public class OrderService {
     private final ProductClient productClient;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
+    private final PaymentClient paymentClient;
+
     public Integer createOrder(@Valid OrderRequest orderRequest) {
         // check the customer --> OpenFeign
         var customer = customerClient.findCustomerById(orderRequest.customerId())
@@ -45,6 +49,15 @@ public class OrderService {
             );
         }
         // todo start payment process
+        var paymentRequest = new PaymentRequest(
+            orderRequest.amount(),
+            orderRequest.paymentMethod(),
+                orderRequest.id(),
+                orderRequest.reference(),
+                customer
+        );
+
+        paymentClient.requestOrderPayment(paymentRequest);
 
         // send the confirmation  --> notification-ms (kafka)
         orderProducer.sendOrderConfirmation(
